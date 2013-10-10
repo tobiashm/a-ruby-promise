@@ -20,7 +20,20 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This gem tries to be a Ruby version of the JavaScript Promises as defined by
+http://promises-aplus.github.io/promises-spec/ and http://dom.spec.whatwg.org/#promises
+
+```ruby
+def timeout_promise(promise, timeout_in_seconds)
+  Promise.new do |fulfill, reject|
+    promise.then fulfill
+    Thread.new do
+      sleep timeout_in_seconds
+      reject.call "Timeout reached"
+    end
+  end
+end
+```
 
 ## Contributing
 
