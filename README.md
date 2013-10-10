@@ -1,5 +1,7 @@
 # Promise
 
+[![Build Status](https://travis-ci.org/tobiashm/a-ruby-promise.png?branch=master)](https://travis-ci.org/tobiashm/a-ruby-promise)
+
 TODO: Write a gem description
 
 ## Installation
