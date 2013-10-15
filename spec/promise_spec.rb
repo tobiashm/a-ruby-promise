@@ -25,7 +25,7 @@ describe Promise do
   describe "timeout" do
     it "fulfills quickly" do
       p1 = Promise.new
-      p2 = timeout_promise(p1, 0.2)
+      p2 = timeout_promise(p1, 0.05)
       p1.fulfill "ok"
       p2.state.must_equal :fulfilled
       p2_value = nil
@@ -35,8 +35,8 @@ describe Promise do
 
     it "rejects after some time" do
       p1 = Promise.new
-      p2 = timeout_promise(p1, 0.2)
-      sleep 0.4
+      p2 = timeout_promise(p1, 0.05)
+      sleep 0.1
       p1.fulfill "ok"
       p2.state.must_equal :rejected
       p2_reason = nil

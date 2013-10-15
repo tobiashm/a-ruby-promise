@@ -9,6 +9,14 @@ def rejected(reason)
   Promise.new { |_, reject| reject.call(reason) }
 end
 
+def short_sleep
+  sleep 0.05
+end
+
+def longer_sleep
+  sleep 0.1
+end
+
 def test_fulfilled(value, test)
   describe "already-fulfilled" do
     test.call resolved(value)
@@ -24,7 +32,7 @@ def test_fulfilled(value, test)
     p = Promise.new
     test.call p
     Thread.new do
-      sleep(50)
+      short_sleep
       p.fulfill(value)
     end
   end
@@ -45,7 +53,7 @@ def test_rejected(reason, test)
     p = Promise.new
     test.call p
     Thread.new do
-      sleep(50)
+      short_sleep
       p.reject(reason)
     end
   end

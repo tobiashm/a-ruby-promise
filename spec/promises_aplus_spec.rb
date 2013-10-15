@@ -26,11 +26,14 @@ describe Promise do
       on_fulfilled_called = false
       Promise.new do |fulfill, reject|
         Thread.new do
-          sleep(20)
+          short_sleep
           fulfill.call(dummy)
           reject.call(dummy)
         end
       end.then ->(v) { on_fulfilled_called = true }, ->(r) { on_fulfilled_called.must_equal false }
+      on_fulfilled_called.must_equal false
+      longer_sleep
+      on_fulfilled_called.must_equal true
     end
   end
 
@@ -52,11 +55,14 @@ describe Promise do
       on_rejected_called = false
       Promise.new do |fulfill, reject|
         Thread.new do
-          sleep(50)
+          short_sleep
           reject.call(dummy)
           fulfill.call(dummy)
         end
       end.then ->(v) { on_rejected_called.must_equal false }, ->(r) { on_rejected_called = true }
+      on_rejected_called.must_equal false
+      longer_sleep
+      on_rejected_called.must_equal true
     end
   end
 
