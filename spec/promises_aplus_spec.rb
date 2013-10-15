@@ -5,13 +5,10 @@ require_relative "spec_helper"
 
 dummy = { dummy: "dummy" }
 
-done = ->(x) { assert true }
-
 describe Promise do
   describe "2.1.2.1: When fulfilled, a promise: must not transition to any other state." do
     test_fulfilled(dummy, ->(promise) {
-      on_fulfilled_called = false
-      promise.then ->(v) { on_fulfilled_called = true }, ->(r) { on_fulfilled_called.must_equal false }
+      return promise.then ->(v) { pass }, ->(r) { flunk }
     })
 
     it "trying to fulfill then immediately reject" do
@@ -19,7 +16,8 @@ describe Promise do
       Promise.new do |fulfill, reject|
         fulfill.call(dummy)
         reject.call(dummy)
-      end.then ->(v) { on_fulfilled_called = true }, ->(r) { on_fulfilled_called.must_equal false }
+      end.then ->(v) { on_fulfilled_called = true }, ->(r) { flunk }
+      on_fulfilled_called.must_equal true
     end
 
     it "trying to fulfill then reject, delayed" do
@@ -30,7 +28,7 @@ describe Promise do
           fulfill.call(dummy)
           reject.call(dummy)
         end
-      end.then ->(v) { on_fulfilled_called = true }, ->(r) { on_fulfilled_called.must_equal false }
+      end.then ->(v) { on_fulfilled_called = true }, ->(r) { flunk }
       on_fulfilled_called.must_equal false
       longer_sleep
       on_fulfilled_called.must_equal true
@@ -39,8 +37,7 @@ describe Promise do
 
   describe "2.1.3.1: When rejected, a promise: must not transition to any other state." do
     test_rejected(dummy, ->(promise) {
-      on_rejected_called = false
-      promise.then ->(v) { on_rejected_called.must_equal false }, ->(r) { on_rejected_called = true }
+      return promise.then ->(v) { flunk }, ->(r) { pass }
     })
 
     it "trying to reject then immediately fulfill" do
@@ -48,7 +45,8 @@ describe Promise do
       Promise.new do |fulfill, reject|
         reject.call(dummy)
         fulfill.call(dummy)
-      end.then ->(v) { on_rejected_called.must_equal false }, ->(r) { on_rejected_called = true }
+      end.then ->(v) { flunk }, ->(r) { on_rejected_called = true }
+      on_rejected_called.must_equal true
     end
 
     it "trying to reject then fulfill, delayed" do
@@ -59,7 +57,7 @@ describe Promise do
           reject.call(dummy)
           fulfill.call(dummy)
         end
-      end.then ->(v) { on_rejected_called.must_equal false }, ->(r) { on_rejected_called = true }
+      end.then ->(v) { flunk }, ->(r) { on_rejected_called = true }
       on_rejected_called.must_equal false
       longer_sleep
       on_rejected_called.must_equal true
@@ -70,7 +68,7 @@ describe Promise do
     describe "2.2.1.1: If `onFulfilled` is not a function, it must be ignored." do
       [nil, false, 5, Object.new].each do |non_function|
         it "`onFulfilled` is `#{non_function.inspect}`" do
-          rejected(dummy).then(non_function, done)
+          rejected(dummy).then non_function, ->(r) { pass }
         end
       end
     end
@@ -78,7 +76,7 @@ describe Promise do
     describe "2.2.1.2: If `onRejected` is not a function, it must be ignored." do
       [nil, false, 5, Object.new].each do |non_function|
         it "`onRejected` is `#{non_function.inspect}`" do
-          resolved(dummy).then(done, non_function)
+          resolved(dummy).then ->(v) { pass }, non_function
         end
       end
     end
