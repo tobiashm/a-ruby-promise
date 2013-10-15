@@ -13,6 +13,10 @@ class Promise
     yield method(:fulfill), method(:reject) if block_given?
   end
 
+  %w[pending fulfilled rejected].each do |state|
+    define_method("#{state}?") { @state == state.to_sym }
+  end
+
   def fulfill(value)
     return unless @state == :pending
     @state = :fulfilled
