@@ -7,9 +7,29 @@ dummy = { dummy: "dummy" }
 
 describe Promise do
   describe "2.1.2.1: When fulfilled, a promise: must not transition to any other state." do
-    test_fulfilled(dummy, ->(promise) {
-      return promise.then ->(v) { pass }, ->(r) { flunk }
-    })
+    it "already-fulfilled" do
+      p = resolved(dummy).then ->(v) { pass }, ->(r) { flunk }
+      assert_resolved(p)
+    end
+
+    it "immediately-fulfilled" do
+      p = Promise.new
+      p2 = p.then ->(v) { pass }, ->(r) { flunk }
+      p.fulfill(dummy)
+      assert_resolved(p2)
+    end
+
+    it "eventually-fulfilled" do
+      p = Promise.new
+      p2 = p.then ->(v) { pass }, ->(r) { flunk }
+      Thread.new do
+        short_sleep
+        p.fulfill(dummy)
+      end
+      assert_unresolved(p2)
+      longer_sleep
+      assert_resolved(p2)
+    end
 
     it "trying to fulfill then immediately reject" do
       on_fulfilled_called = false
@@ -36,9 +56,29 @@ describe Promise do
   end
 
   describe "2.1.3.1: When rejected, a promise: must not transition to any other state." do
-    test_rejected(dummy, ->(promise) {
-      return promise.then ->(v) { flunk }, ->(r) { pass }
-    })
+    it "already-rejected" do
+      p = rejected(dummy).then ->(v) { flunk }, ->(r) { pass }
+      assert_resolved(p)
+    end
+
+    it "immediately-rejected" do
+      p = Promise.new
+      p2 = p.then ->(v) { flunk }, ->(r) { pass }
+      p.reject(dummy)
+      assert_resolved(p2)
+    end
+
+    it "eventually-rejected" do
+      p = Promise.new
+      p2 = p.then ->(v) { flunk }, ->(r) { pass }
+      Thread.new do
+        short_sleep
+        p.reject(dummy)
+      end
+      assert_unresolved(p2)
+      longer_sleep
+      assert_resolved(p2)
+    end
 
     it "trying to reject then immediately fulfill" do
       on_rejected_called = false

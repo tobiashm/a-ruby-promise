@@ -17,44 +17,10 @@ def longer_sleep
   sleep 0.1
 end
 
-def test_fulfilled(value, test)
-  describe "already-fulfilled" do
-    test.call resolved(value)
-  end
-
-  describe "immediately-fulfilled" do
-    p = Promise.new
-    test.call p
-    p.fulfill(value)
-  end
-
-  describe "eventually-fulfilled" do
-    p = Promise.new
-    test.call p
-    Thread.new do
-      short_sleep
-      p.fulfill(value)
-    end
-  end
+def assert_unresolved(promise)
+  promise.must_be :pending?
 end
 
-def test_rejected(reason, test)
-  describe "already-rejected" do
-    test.call rejected(reason)
-  end
-
-  describe "immediately-rejected" do
-    p = Promise.new
-    test.call p
-    p.reject(reason)
-  end
-
-  describe "eventually-rejected" do
-    p = Promise.new
-    test.call p
-    Thread.new do
-      short_sleep
-      p.reject(reason)
-    end
-  end
+def assert_resolved(promise)
+  promise.wont_be :pending?
 end
