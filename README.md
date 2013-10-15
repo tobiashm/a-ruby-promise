@@ -2,7 +2,8 @@
 
 [![Build Status](https://travis-ci.org/tobiashm/a-ruby-promise.png?branch=master)](https://travis-ci.org/tobiashm/a-ruby-promise)
 
-TODO: Write a gem description
+This gem tries to be a Ruby version of the JavaScript Promises as defined by
+http://promises-aplus.github.io/promises-spec/ and http://dom.spec.whatwg.org/#promises
 
 ## Installation
 
@@ -19,9 +20,6 @@ Or install it yourself as:
     $ gem install a-ruby-promise
 
 ## Usage
-
-This gem tries to be a Ruby version of the JavaScript Promises as defined by
-http://promises-aplus.github.io/promises-spec/ and http://dom.spec.whatwg.org/#promises
 
 ```ruby
 def timeout_promise(promise, timeout_in_seconds)
