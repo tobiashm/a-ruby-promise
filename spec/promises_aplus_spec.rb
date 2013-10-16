@@ -33,9 +33,7 @@ describe Promise do
       end
       assert_unresolved(p1)
       assert_unresolved(p2)
-      longer_sleep
-      assert_resolved(p1)
-      assert_resolved(p2)
+      eventually { assert_resolved(p1) and assert_resolved(p2) }
     end
 
     it "trying to fulfill then immediately reject" do
@@ -57,8 +55,7 @@ describe Promise do
         end
       end.then ->(v) { on_fulfilled_called = true }, ->(r) { flunk }
       on_fulfilled_called.must_equal false
-      longer_sleep
-      on_fulfilled_called.must_equal true
+      eventually { on_fulfilled_called.must_equal true }
     end
   end
 
@@ -86,9 +83,7 @@ describe Promise do
       end
       assert_unresolved(p1)
       assert_unresolved(p2)
-      longer_sleep
-      assert_resolved(p1)
-      assert_resolved(p2)
+      eventually { assert_resolved(p1) and assert_resolved(p2) }
     end
 
     it "trying to reject then immediately fulfill" do
@@ -110,8 +105,7 @@ describe Promise do
         end
       end.then ->(v) { flunk }, ->(r) { on_rejected_called = true }
       on_rejected_called.must_equal false
-      longer_sleep
-      on_rejected_called.must_equal true
+      eventually { on_rejected_called.must_equal true }
     end
   end
 

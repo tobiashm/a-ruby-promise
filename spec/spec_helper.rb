@@ -20,14 +20,23 @@ def short_sleep
   sleep 0.05
 end
 
-def longer_sleep
-  sleep 0.1
-end
-
 def assert_unresolved(promise)
   promise.must_be :pending?
 end
 
 def assert_resolved(promise)
   promise.wont_be :pending?
+end
+
+def eventually(&block)
+  time_limit = Time.now + 2
+  loop do
+    begin
+      yield
+    rescue Minitest::Assertion => error
+    end
+    return if error.nil?
+    raise error if Time.now >= time_limit
+    sleep 0.05
+  end
 end
