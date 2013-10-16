@@ -17,24 +17,6 @@ class Promise
     define_method("#{state}?") { @state == state.to_sym }
   end
 
-  def fulfill(value)
-    return unless @state == :pending
-    @state = :fulfilled
-    @value = value
-    while callback = @callbacks.shift
-      callback.call(value) rescue nil
-    end
-  end
-
-  def reject(reason)
-    return unless @state == :pending
-    @state = :rejected
-    @reason = reason
-    while errback = @errbacks.shift
-      errback.call(reason) rescue nil
-    end
-  end
-
   def then(on_fulfilled = nil, on_rejected = nil)
     result = Promise.new
 
@@ -86,6 +68,26 @@ class Promise
     end
 
     result
+  end
+
+protected
+
+  def fulfill(value)
+    return unless @state == :pending
+    @state = :fulfilled
+    @value = value
+    while callback = @callbacks.shift
+      callback.call(value) rescue nil
+    end
+  end
+
+  def reject(reason)
+    return unless @state == :pending
+    @state = :rejected
+    @reason = reason
+    while errback = @errbacks.shift
+      errback.call(reason) rescue nil
+    end
   end
 
 private

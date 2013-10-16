@@ -13,21 +13,28 @@ describe Promise do
     end
 
     it "immediately-fulfilled" do
-      p = Promise.new
-      p2 = p.then ->(v) { pass }, ->(r) { flunk }
-      p.fulfill(dummy)
+      d = deferred
+      p1 = d.promise
+      p2 = p1.then ->(v) { pass }, ->(r) { flunk }
+      assert_unresolved(p1)
+      assert_unresolved(p2)
+      d.fulfill(dummy)
+      assert_resolved(p1)
       assert_resolved(p2)
     end
 
     it "eventually-fulfilled" do
-      p = Promise.new
-      p2 = p.then ->(v) { pass }, ->(r) { flunk }
+      d = deferred
+      p1 = d.promise
+      p2 = p1.then ->(v) { pass }, ->(r) { flunk }
       Thread.new do
         short_sleep
-        p.fulfill(dummy)
+        d.fulfill(dummy)
       end
+      assert_unresolved(p1)
       assert_unresolved(p2)
       longer_sleep
+      assert_resolved(p1)
       assert_resolved(p2)
     end
 
@@ -62,21 +69,25 @@ describe Promise do
     end
 
     it "immediately-rejected" do
-      p = Promise.new
-      p2 = p.then ->(v) { flunk }, ->(r) { pass }
-      p.reject(dummy)
+      d = deferred
+      p1 = d.promise
+      p2 = p1.then ->(v) { flunk }, ->(r) { pass }
+      d.reject(dummy)
       assert_resolved(p2)
     end
 
     it "eventually-rejected" do
-      p = Promise.new
-      p2 = p.then ->(v) { flunk }, ->(r) { pass }
+      d = deferred
+      p1 = d.promise
+      p2 = p1.then ->(v) { flunk }, ->(r) { pass }
       Thread.new do
         short_sleep
-        p.reject(dummy)
+        d.reject(dummy)
       end
+      assert_unresolved(p1)
       assert_unresolved(p2)
       longer_sleep
+      assert_resolved(p1)
       assert_resolved(p2)
     end
 

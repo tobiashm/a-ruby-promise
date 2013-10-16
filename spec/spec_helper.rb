@@ -1,5 +1,8 @@
 require "minitest/autorun"
 require "a-ruby-promise"
+require_relative "deferred"
+
+Thread.abort_on_exception = true
 
 def resolved(value)
   Promise.new { fulfill(value) }
@@ -7,6 +10,10 @@ end
 
 def rejected(reason)
   Promise.new { reject(reason) }
+end
+
+def deferred
+  Deferred.new
 end
 
 def short_sleep
