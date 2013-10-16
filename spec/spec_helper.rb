@@ -20,12 +20,12 @@ def short_sleep
   sleep 0.05
 end
 
-def assert_unresolved(promise)
-  promise.must_be :pending?
+def assert_unresolved(*promises)
+  promises.each { |promise| promise.must_be :pending? }
 end
 
-def assert_resolved(promise)
-  promise.wont_be :pending?
+def assert_resolved(*promises)
+  promises.each { |promise| promise.wont_be :pending? }
 end
 
 def eventually(&block)

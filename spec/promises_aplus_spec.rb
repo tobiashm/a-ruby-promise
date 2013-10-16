@@ -16,11 +16,9 @@ describe Promise do
       d = deferred
       p1 = d.promise
       p2 = p1.then ->(v) { pass }, ->(r) { flunk }
-      assert_unresolved(p1)
-      assert_unresolved(p2)
+      assert_unresolved(p1, p2)
       d.fulfill(dummy)
-      assert_resolved(p1)
-      assert_resolved(p2)
+      assert_resolved(p1, p2)
     end
 
     it "eventually-fulfilled" do
@@ -31,9 +29,8 @@ describe Promise do
         short_sleep
         d.fulfill(dummy)
       end
-      assert_unresolved(p1)
-      assert_unresolved(p2)
-      eventually { assert_resolved(p1) and assert_resolved(p2) }
+      assert_unresolved(p1, p2)
+      eventually { assert_resolved(p1, p2) }
     end
 
     it "trying to fulfill then immediately reject" do
@@ -81,9 +78,8 @@ describe Promise do
         short_sleep
         d.reject(dummy)
       end
-      assert_unresolved(p1)
-      assert_unresolved(p2)
-      eventually { assert_resolved(p1) and assert_resolved(p2) }
+      assert_unresolved(p1, p2)
+      eventually { assert_resolved(p1, p2) }
     end
 
     it "trying to reject then immediately fulfill" do
