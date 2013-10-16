@@ -10,7 +10,7 @@ class Promise
     @reason = nil
     @callbacks = []
     @errbacks = []
-    yield method(:fulfill), method(:reject) if block_given?
+    instance_eval(&block) if block_given?
   end
 
   %w[pending fulfilled rejected].each do |state|

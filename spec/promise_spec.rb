@@ -1,11 +1,11 @@
 require_relative "spec_helper"
 
 def timeout_promise(promise, timeout_in_seconds)
-  Promise.new do |fulfill, reject|
-    promise.then fulfill
+  Promise.new do
+    promise.then method(:fulfill)
     Thread.new do
       sleep timeout_in_seconds
-      reject.call "Timeout reached"
+      reject "Timeout reached"
     end
   end
 end

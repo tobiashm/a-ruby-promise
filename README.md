@@ -21,13 +21,27 @@ Or install it yourself as:
 
 ## Usage
 
+Create a promise:
+```ruby
+Promise.new do
+  begin
+    # do some computation
+    value = 42 # result of computation
+    fulfill(value)
+  rescue Exception => e
+    reject(e)
+  end
+end
+```
+
+Create a new promise which will be rejected if it isn't fulfilled before a timeout period:
 ```ruby
 def timeout_promise(promise, timeout_in_seconds)
-  Promise.new do |fulfill, reject|
-    promise.then fulfill
+  Promise.new do
+    promise.then method(:fulfill)
     Thread.new do
       sleep timeout_in_seconds
-      reject.call "Timeout reached"
+      reject "Timeout reached"
     end
   end
 end

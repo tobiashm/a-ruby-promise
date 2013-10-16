@@ -33,20 +33,20 @@ describe Promise do
 
     it "trying to fulfill then immediately reject" do
       on_fulfilled_called = false
-      Promise.new do |fulfill, reject|
-        fulfill.call(dummy)
-        reject.call(dummy)
+      Promise.new do
+        fulfill(dummy)
+        reject(dummy)
       end.then ->(v) { on_fulfilled_called = true }, ->(r) { flunk }
       on_fulfilled_called.must_equal true
     end
 
     it "trying to fulfill then reject, delayed" do
       on_fulfilled_called = false
-      Promise.new do |fulfill, reject|
+      Promise.new do
         Thread.new do
           short_sleep
-          fulfill.call(dummy)
-          reject.call(dummy)
+          fulfill(dummy)
+          reject(dummy)
         end
       end.then ->(v) { on_fulfilled_called = true }, ->(r) { flunk }
       on_fulfilled_called.must_equal false
@@ -82,20 +82,20 @@ describe Promise do
 
     it "trying to reject then immediately fulfill" do
       on_rejected_called = false
-      Promise.new do |fulfill, reject|
-        reject.call(dummy)
-        fulfill.call(dummy)
+      Promise.new do
+        reject(dummy)
+        fulfill(dummy)
       end.then ->(v) { flunk }, ->(r) { on_rejected_called = true }
       on_rejected_called.must_equal true
     end
 
     it "trying to reject then fulfill, delayed" do
       on_rejected_called = false
-      Promise.new do |fulfill, reject|
+      Promise.new do
         Thread.new do
           short_sleep
-          reject.call(dummy)
-          fulfill.call(dummy)
+          reject(dummy)
+          fulfill(dummy)
         end
       end.then ->(v) { flunk }, ->(r) { on_rejected_called = true }
       on_rejected_called.must_equal false

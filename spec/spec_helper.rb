@@ -2,11 +2,11 @@ require "minitest/autorun"
 require "a-ruby-promise"
 
 def resolved(value)
-  Promise.new { |fulfill, _| fulfill.call(value) }
+  Promise.new { fulfill(value) }
 end
 
 def rejected(reason)
-  Promise.new { |_, reject| reject.call(reason) }
+  Promise.new { reject(reason) }
 end
 
 def short_sleep
