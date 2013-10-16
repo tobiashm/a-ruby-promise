@@ -14,23 +14,21 @@ describe Promise do
 
     it "immediately-fulfilled" do
       d = deferred
-      p1 = d.promise
-      p2 = p1.then ->(v) { pass }, ->(r) { flunk }
-      assert_unresolved(p1, p2)
+      p = d.promise.then ->(v) { pass }, ->(r) { flunk }
+      assert_unresolved(p)
       d.fulfill(dummy)
-      assert_resolved(p1, p2)
+      assert_resolved(p)
     end
 
     it "eventually-fulfilled" do
       d = deferred
-      p1 = d.promise
-      p2 = p1.then ->(v) { pass }, ->(r) { flunk }
+      p = d.promise.then ->(v) { pass }, ->(r) { flunk }
       Thread.new do
         short_sleep
         d.fulfill(dummy)
       end
-      assert_unresolved(p1, p2)
-      eventually { assert_resolved(p1, p2) }
+      assert_unresolved(p)
+      eventually { assert_resolved(p) }
     end
 
     it "trying to fulfill then immediately reject" do
@@ -64,22 +62,21 @@ describe Promise do
 
     it "immediately-rejected" do
       d = deferred
-      p1 = d.promise
-      p2 = p1.then ->(v) { flunk }, ->(r) { pass }
+      p = d.promise.then ->(v) { flunk }, ->(r) { pass }
+      assert_unresolved(p)
       d.reject(dummy)
-      assert_resolved(p2)
+      assert_resolved(p)
     end
 
     it "eventually-rejected" do
       d = deferred
-      p1 = d.promise
-      p2 = p1.then ->(v) { flunk }, ->(r) { pass }
+      p = d.promise.then ->(v) { flunk }, ->(r) { pass }
       Thread.new do
         short_sleep
         d.reject(dummy)
       end
-      assert_unresolved(p1, p2)
-      eventually { assert_resolved(p1, p2) }
+      assert_unresolved(p)
+      eventually { assert_resolved(p) }
     end
 
     it "trying to reject then immediately fulfill" do
@@ -109,7 +106,8 @@ describe Promise do
     describe "2.2.1.1: If `onFulfilled` is not a function, it must be ignored." do
       [nil, false, 5, Object.new].each do |non_function|
         it "`onFulfilled` is `#{non_function.inspect}`" do
-          rejected(dummy).then non_function, ->(r) { pass }
+          p = rejected(dummy).then non_function, ->(r) { pass }
+          assert_resolved(p)
         end
       end
     end
@@ -117,7 +115,8 @@ describe Promise do
     describe "2.2.1.2: If `onRejected` is not a function, it must be ignored." do
       [nil, false, 5, Object.new].each do |non_function|
         it "`onRejected` is `#{non_function.inspect}`" do
-          resolved(dummy).then ->(v) { pass }, non_function
+          p = resolved(dummy).then ->(v) { pass }, non_function
+          assert_resolved(p)
         end
       end
     end
