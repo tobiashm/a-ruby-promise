@@ -1,4 +1,5 @@
 require "minitest/autorun"
+require "minitest/pride"
 require "a-ruby-promise"
 require_relative "deferred"
 
