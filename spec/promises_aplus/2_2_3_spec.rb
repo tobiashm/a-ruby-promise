@@ -1,27 +1,18 @@
 # encoding: UTF-8
 require_relative "../spec_helper"
+require_relative "../promises_aplus"
 
 dummy = { dummy: "dummy" }
 sentinel = { sentinel: "sentinel" }
 
 describe "2.2.3: If `onRejected` is a function," do
-  before do
-    @done = false
-  end
-
-  after do
-    eventually { @done.must_equal true }
-  end
-
-  def done
-    @done = true
-  end
+  include PromisesAplus
 
   describe "2.2.3.1: it must be called after `promise` is rejected, with `promise`’s rejection reason as its first argument." do
     it "already-rejected" do
       p = rejected(sentinel).then ->(v) { flunk }, ->(r) {
         r.must_equal sentinel
-        done
+        done!
       }
     end
 
@@ -29,7 +20,7 @@ describe "2.2.3: If `onRejected` is a function," do
       d = deferred
       p = d.promise.then ->(v) { flunk }, ->(r) {
         r.must_equal sentinel
-        done
+        done!
       }
       d.reject(sentinel)
     end
@@ -38,7 +29,7 @@ describe "2.2.3: If `onRejected` is a function," do
       d = deferred
       p = d.promise.then ->(v) { flunk }, ->(r) {
         r.must_equal sentinel
-        done
+        done!
       }
       short_sleep
       d.reject(sentinel)
@@ -52,7 +43,7 @@ describe "2.2.3: If `onRejected` is a function," do
       is_rejected = false
       d.promise.then(nil, ->(r) {
         is_rejected.must_equal true
-        done
+        done!
       })
 
       sleep 0.050
@@ -66,12 +57,12 @@ describe "2.2.3: If `onRejected` is a function," do
 
       d.promise.then(nil, ->(r) {
         on_rejected_called = true
-        done
+        done!
       })
 
       sleep 0.150
       on_rejected_called.must_equal false
-      done
+      done!
     end
   end
 
@@ -81,7 +72,7 @@ describe "2.2.3: If `onRejected` is a function," do
 
       rejected(dummy).then(nil, ->(r) {
         (times_called += 1).must_equal 1
-        done
+        done!
       })
     end
 
@@ -91,7 +82,7 @@ describe "2.2.3: If `onRejected` is a function," do
 
       d.promise.then(nil, ->(r) {
         (times_called += 1).must_equal 1
-        done
+        done!
       })
 
       d.reject(dummy)
@@ -104,7 +95,7 @@ describe "2.2.3: If `onRejected` is a function," do
 
       d.promise.then(nil, ->(r) {
         (times_called += 1).must_equal 1
-        done
+        done!
       })
 
       sleep 0.050
@@ -118,7 +109,7 @@ describe "2.2.3: If `onRejected` is a function," do
 
       d.promise.then(nil, ->(r) {
         (times_called += 1).must_equal 1
-        done
+        done!
       })
 
       d.reject(dummy)
@@ -143,7 +134,7 @@ describe "2.2.3: If `onRejected` is a function," do
       sleep 0.050
       d.promise.then(nil, ->(r) {
         (times_called[2] += 1).must_equal 1
-        done
+        done!
       })
 
       sleep 0.050
@@ -163,7 +154,7 @@ describe "2.2.3: If `onRejected` is a function," do
 
       d.promise.then(nil, ->(r) {
         (times_called[1] += 1).must_equal 1
-        done
+        done!
       })
     end
   end
