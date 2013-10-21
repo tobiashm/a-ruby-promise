@@ -9,30 +9,11 @@ describe "2.2.3: If `onRejected` is a function," do
   include PromisesAplus
 
   describe "2.2.3.1: it must be called after `promise` is rejected, with `promise`’s rejection reason as its first argument." do
-    it "already-rejected" do
-      p = rejected(sentinel).then ->(v) { flunk }, ->(r) {
-        r.must_equal sentinel
-        done!
+    PromisesAplus.test_rejected(self, sentinel) do |promise, done|
+      promise.then nil, ->(reason) {
+        reason.must_equal sentinel
+        done.call
       }
-    end
-
-    it "immediately-rejected" do
-      d = deferred
-      p = d.promise.then ->(v) { flunk }, ->(r) {
-        r.must_equal sentinel
-        done!
-      }
-      d.reject(sentinel)
-    end
-
-    it "eventually-rejected" do
-      d = deferred
-      p = d.promise.then ->(v) { flunk }, ->(r) {
-        r.must_equal sentinel
-        done!
-      }
-      short_sleep
-      d.reject(sentinel)
     end
   end
 
