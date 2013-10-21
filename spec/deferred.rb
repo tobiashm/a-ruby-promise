@@ -8,6 +8,7 @@ class Deferred
   def fulfill(value)
     @promise.__send__(:fulfill, value)
   end
+  alias_method :resolve, :fulfill
 
   def reject(reason)
     @promise.__send__(:reject, reason)
