@@ -22,7 +22,6 @@ class Promise
 
     call_and_fulfill = ->(value) {
       begin
-        # From 3.2.1, don't call non-functions values
         if function?(on_fulfilled)
           new_value = on_fulfilled.call(value)
           if Promise === new_value
@@ -30,8 +29,7 @@ class Promise
           else
             result.fulfill(new_value)
           end
-        elsif !on_fulfilled.nil?
-          # From 3.2.6.4
+        else
           result.fulfill(value)
         end
       rescue Exception => e
@@ -48,8 +46,7 @@ class Promise
           else
             result.fulfill(new_value)
           end
-        elsif !on_rejected.nil?
-          # From 3.2.6.5
+        else
           result.reject(reason)
         end
       rescue Exception => e
@@ -59,8 +56,8 @@ class Promise
 
     case @state
     when :pending
-      @callbacks << call_and_fulfill if on_fulfilled
-      @errbacks << call_and_reject if on_rejected
+      @callbacks << call_and_fulfill
+      @errbacks << call_and_reject
     when :fulfilled
       call_and_fulfill.call(@value)
     when :rejected
