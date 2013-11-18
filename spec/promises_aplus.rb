@@ -1,3 +1,5 @@
+# http://promises-aplus.github.io/promises-spec/
+# https://github.com/promises-aplus/promises-tests
 module PromisesAplus
   def setup
     @done = false
