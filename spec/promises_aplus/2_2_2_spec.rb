@@ -29,6 +29,7 @@ describe "2.2.2: If `onFulfilled` is a function," do
 
       Thread.new do
         short_sleep
+        # Notice: flipped statements since we don't have delayed execution
         is_fulfilled = true
         d.resolve(dummy)
       end
