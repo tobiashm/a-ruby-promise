@@ -1,11 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'promise/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "a-ruby-promise"
-  spec.version       = Promise::VERSION
+  spec.version       = "1.0.snapshot"
   spec.authors       = ["Tobias Haagen Michaelsen"]
   spec.email         = ["tobias.michaelsen@gmail.com"]
   spec.summary       = %q{Promises in Ruby}
