@@ -1,5 +1,3 @@
-require "promise/version"
-
 class Promise
 
   attr_reader :state, :value, :reason
